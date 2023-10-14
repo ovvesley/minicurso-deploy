@@ -81,3 +81,16 @@ sudo service docker start
 sudo docker run hello-world
 
 ---
+
+
+# ativar docker sem root
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+docker run hello-world
+
+
+# habilitar o servico
+
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service

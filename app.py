@@ -1,6 +1,6 @@
-from flask import Flask, render_template, jsonify
-import random
+from flask import Flask, render_template, jsonify, request
 from connector.database import connect_postgressql
+from repositories.serie_repository import SerieRepository
 
 app = Flask(__name__)
 
@@ -9,63 +9,35 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/t/<username>')
-def teacher(username):
-    return render_template('teacher.html', username=username)
 
-# api
+@app.route('/api/series')
+def list_series():
+    serieRepository = SerieRepository()
+    series = serieRepository.list_series() 
 
-@app.route('/api/t')
-def list_teacher():
-    
-    # { status: 'ok', data: [ { username: 'xxx', name: 'xxx', avatar: 'xxx' } ] }
+    series.append({
+        'id': 1,
+        'title': 'Serie 1',
+        'image_url': 'https://picsum.photos/200/300',
+        'reviews_avg': 4,
+        'reviews_count': 10
+    })   
     return jsonify({
         'status': 'ok',
-        'data': [
-            {
-                'username': 'xxx',
-                'name': 'xxx',
-                'avatar': 'xxx'
-            }
-        ]
+        'data': series
     })
 
 
-@app.route('/api/t/<username>')
-def show_teacher(username):
-
-    # { status: 'ok', data: { username: 'xxx', name: 'xxx', avatar: 'xxx' }, review_count: 123, reviews: [ { username: 'xxx', name: 'xxx', avatar: 'xxx', content: 'xxx', score: 5, created_at: 'xxx' } ] }, avg_score: 4.5 }
-
+@app.route('/api/series/<int:series_id>/review', methods=['POST'])
+def series_review(series_id: int):
+    serieRepository = SerieRepository()
+    serieRepository.insert_review(
+        serie_id=series_id,
+        value=request.json['value']
+    )
     return jsonify({
         'status': 'ok',
-        'data': {
-            'username': 'xxx',
-            'name': 'xxx',
-            'avatar': 'xxx'
-        },
-        'review_count': 123,
-        'reviews': [
-            {
-                'username': 'xxx',
-                'name': 'xxx',
-                'avatar': 'xxx',
-                'content': 'xxx',
-                'score': 5,
-                'created_at': 'xxx'
-            }
-        ],
-        'avg_score': 4.5
-    })
-
-
-@app.route('/api/t/<username>/reviews')
-def teacher_review():
-
-    # { status: 'ok', message: 'xxx' }
-    
-    return jsonify({
-        'status': 'ok',
-        'message': 'xxx'
+        'message': 'Review inserted'
     })
 
 
