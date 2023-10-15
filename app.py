@@ -5,12 +5,21 @@ import socket
 
 app = Flask(__name__)
 
+def get_hostname_ipaddress():
+    try:
+        hostname = socket.gethostname()
+        ipaddress = socket.gethostbyname(hostname)
+    except Exception as e:
+        hostname = 'unknown'
+        ipaddress = 'unknown'
+
+    return hostname, ipaddress
+
 
 @app.route('/')
 def index():
-    hostname = socket.gethostname() 
-    ipaddress = socket.gethostbyname(hostname)
-
+    
+    hostname, ipaddress = get_hostname_ipaddress()
     return render_template('index.html', hostname=hostname, ipaddress=ipaddress)
     
 
