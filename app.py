@@ -1,5 +1,4 @@
 from flask import Flask, render_template, jsonify, request
-from connector.database import connect_postgressql
 from repositories.serie_repository import SerieRepository
 
 app = Flask(__name__)
