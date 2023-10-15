@@ -18,19 +18,6 @@ def list_series():
         'data': series
     })
 
-# @app.route('/api/series', methods=['POST'])
-# def create_series():
-#     serieRepository = SerieRepository()
-#     series = serieRepository.create_series(
-#         title=request.json['title'],
-#         image_url=request.json['image_url']
-#     )
-#     return jsonify({
-#         'status': 'ok',
-#         'data': series
-#     })
-
-
 @app.route('/api/series/<int:series_id>/review', methods=['POST'])
 def series_review(series_id: int):
     serieRepository = SerieRepository()
