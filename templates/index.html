@@ -49,6 +49,13 @@
         >
           <!-- DYNAMIC_RENDER -->
         </div>
+
+        <div>
+     
+            HOSTNAME: <b>{{hostname}} </b> <br />
+            IP_ADDRESS: <b>{{ipaddress}}</b>
+    
+        </div>
       </div>
     </div>
   </body>
@@ -122,16 +129,12 @@
       starContainer.innerHTML =
         '<h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">Obrigado por avaliar!</h1>';
 
-     
       await reviewSerie(serie.serie_id, serie.rating);
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       await init();
-
-      
     }
-
 
     function reviewSerie(serieId, rating) {
       return fetch(`/api/series/${serieId}/review`, {

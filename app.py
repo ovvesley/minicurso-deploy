@@ -1,12 +1,18 @@
 from flask import Flask, render_template, jsonify, request
 from repositories.serie_repository import SerieRepository
+import socket
+
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    hostname = socket.gethostname() 
+    ipaddress = socket.gethostbyname(hostname)
+
+    return render_template('index.html', hostname=hostname, ipaddress=ipaddress)
+    
 
 
 @app.route('/api/series', methods=['GET'])
