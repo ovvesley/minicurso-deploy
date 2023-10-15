@@ -23,8 +23,13 @@
           content-visibility: auto;
         }
       }
+
+      .star {
+        cursor: pointer;
+      }
     </style>
   </head>
+
   <body>
     <div class="bg-white py-24 sm:py-32">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
@@ -61,6 +66,7 @@
       const seriesHtml = series
         .map((serie) => {
           return makeCardSerie(
+            serie.id,
             serie.title,
             serie.image_url,
             serie.reviews_avg,
@@ -73,15 +79,75 @@
     }
 
     function starsClickListener(e) {
-      const star = e.target;
-      const starId = star.id;
-      const serieId = starId.split("-")[1];
-      const serieRating = star.dataset.value;
+      const svgElement = e.target.closest("svg");
+      let starCount = svgElement.dataset.value;
 
-      console.log(serieId, serieRating);
+      const serieCard = svgElement.closest(".cardSerie");
+      const serieId = serieCard.id.split("-")[1];
+
+      const starContainer = serieCard.querySelector(".starContainer");
+      starContainer.dataset.rating = starCount;
+
+      const serie = {
+        serie_id: serieId,
+        rating: starCount,
+      };
+
+      const stars = serieCard.querySelectorAll(`.star`);
+      stars.forEach((star) => {
+        if (star.dataset.value <= Number(starCount)) {
+          star.classList.add("text-yellow-500");
+        } else {
+          star.classList.remove("text-yellow-500");
+        }
+      });
+
+      const containerReviewButton = serieCard.querySelector(
+        ".containerReviewButton"
+      );
+      containerReviewButton.classList.remove("hidden");
+    }
+
+    async function handleClickButtonReview(e) {
+      const serieCard = e.target.closest(".cardSerie");
+      const serieId = serieCard.id.split("-")[1];
+
+      const starContainer = serieCard.querySelector(".starContainer");
+
+      const serie = {
+        serie_id: serieId,
+        rating: starContainer.dataset.rating,
+      };
+
+      starContainer.innerHTML =
+        '<h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">Obrigado por avaliar!</h1>';
+
+     
+      await reviewSerie(serie.serie_id, serie.rating);
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      await init();
+
+      
+    }
+
+
+    function reviewSerie(serieId, rating) {
+      return fetch(`/api/series/${serieId}/review`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          serie_id: serieId,
+          rating: rating,
+        }),
+      });
     }
 
     function makeCardSerie(
+      id,
       name,
       imageUrl = "",
       rating = 4.5,
@@ -89,10 +155,11 @@
     ) {
       return `
         <div
-            class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+            id="cardSerie-${id}"
+            class="cardSerie max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
           >
             <a href="#">
-              <img class="rounded-t-lg" src="http://picsum.photos/400" alt="" />
+              <img class="rounded-t-lg" src="${imageUrl}" alt="" />
             </a>
             <div class="p-5">
               <a href="#">
@@ -105,12 +172,12 @@
               <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
                 Total de avaliações: ${totalRating}
                 <br />
-                Nota: ${rating}
+                Nota: ${Number(rating).toFixed(2).replace(".", ",")}
               </p>
             </div>
 
             <div class="p-5 pt-0">
-              <div class="flex items-center space-x-3">
+              <div class="flex items-center space-x-3 starContainer">
                 <svg
                   class="star w-8 h-8 text-gray-300 dark:text-gray-500"
                   data-value="1"
@@ -176,7 +243,17 @@
                     d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
                   />
                 </svg>
+
+                <div class="text-gray-700 dark:text-gray-400 hidden containerReviewButton">
+                  <button
+                    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-clifford border border-transparent rounded-lg active:bg-clifford hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                  >
+                    Avaliar
+                  </button>
               </div>
+              </div>
+
+              
             </div>
           </div>
         `;
@@ -188,9 +265,13 @@
       await renderSeries();
 
       const stars = document.querySelectorAll(".star path");
-      console.log(stars);
       stars.forEach((star) =>
         star.addEventListener("click", starsClickListener)
+      );
+
+      const reviewButtons = document.querySelectorAll(".containerReviewButton");
+      reviewButtons.forEach((button) =>
+        button.addEventListener("click", handleClickButtonReview)
       );
     }
 

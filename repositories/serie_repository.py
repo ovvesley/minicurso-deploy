@@ -12,8 +12,18 @@ class SerieRepository:
 
     def list_series(self) -> list:
         cursor = self.connection.cursor()
-        cursor.execute("SELECT AVG(reviews.value) as reviews_avg, COUNT(reviews.id) as reviews_count FROM series INNER JOIN reviews ON series.id = reviews.serie_id GROUP BY series.id")
+        cursor.execute("SELECT series.*, AVG(reviews.value) as reviews_avg, COUNT(reviews.id) as reviews_count FROM series LEFT JOIN reviews ON series.id = reviews.serie_id GROUP BY series.id")
         series = cursor.fetchall()
+
+        series = [{
+            'id': serie[0],
+            'title': serie[1],
+            'image_url': serie[2],
+            'reviews_avg': serie[3] or 0,
+            'reviews_count': serie[4] or 0
+        } for serie in series]
+
+
         cursor.close()
         return series
     
@@ -22,5 +32,17 @@ class SerieRepository:
         cursor.execute("INSERT INTO reviews (serie_id, value) VALUES (%s, %s)", (serie_id, value))
         self.connection.commit()
         cursor.close()
+
+    def create_series(self, title: str, image_url: str) -> dict:
+        cursor = self.connection.cursor()
+        cursor.execute("INSERT INTO series (title, image_url) VALUES (%s, %s) RETURNING id", (title, image_url))
+        self.connection.commit()
+        serie_id = cursor.fetchone()[0]
+        cursor.close()
+        return {
+            'id': serie_id,
+            'title': title,
+            'image_url': image_url
+        }
 
         

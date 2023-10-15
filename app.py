@@ -10,22 +10,26 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/api/series')
+@app.route('/api/series', methods=['GET'])
 def list_series():
     serieRepository = SerieRepository()
     series = serieRepository.list_series() 
-
-    series.append({
-        'id': 1,
-        'title': 'Serie 1',
-        'image_url': 'https://picsum.photos/200/300',
-        'reviews_avg': 4,
-        'reviews_count': 10
-    })   
     return jsonify({
         'status': 'ok',
         'data': series
     })
+
+# @app.route('/api/series', methods=['POST'])
+# def create_series():
+#     serieRepository = SerieRepository()
+#     series = serieRepository.create_series(
+#         title=request.json['title'],
+#         image_url=request.json['image_url']
+#     )
+#     return jsonify({
+#         'status': 'ok',
+#         'data': series
+#     })
 
 
 @app.route('/api/series/<int:series_id>/review', methods=['POST'])
@@ -33,7 +37,7 @@ def series_review(series_id: int):
     serieRepository = SerieRepository()
     serieRepository.insert_review(
         serie_id=series_id,
-        value=request.json['value']
+        value=request.json['rating']
     )
     return jsonify({
         'status': 'ok',
