@@ -3,7 +3,9 @@ version: "3.3"
 services:
   app:
     image: ovvesley/minicurso-deploy:latest
-    build: .
+    build: 
+      context: .
+      dockerfile: dev.Dockerfile
     volumes:
       - .:/code
     ports:
