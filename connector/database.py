@@ -9,11 +9,11 @@ def connect_postgressql(
 ):
     
     print ("Connecting to PostgreSQL")
-    print ("host: " + host)
-    print ("database: " + database)
-    print ("user: " + user)
-    print ("password: " + password)
-    print ("port: " + port)
+    print ("host: " + str(host))
+    print ("database: " + str(database))
+    print ("user: " + str(user))
+    print ("password: " + len(str(password)) * "*")
+    print ("port: " + str(port))
 
     conn = psycopg2.connect(
         host=host,

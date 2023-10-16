@@ -1,5 +1,7 @@
 from connector.database import connect_postgressql
 import os
+load_dotenv() 
+
 class SerieRepository:
     def __init__(self):
         self.connection = connect_postgressql(

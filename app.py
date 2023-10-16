@@ -2,7 +2,6 @@ from flask import Flask, render_template, jsonify, request
 from repositories.serie_repository import SerieRepository
 import socket
 
-
 app = Flask(__name__)
 
 def get_hostname_ipaddress():
