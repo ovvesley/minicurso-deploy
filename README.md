@@ -69,6 +69,7 @@ docker run hello-world
 # configurar docker swarm
 
 touch docker-swarm.yml
+mkdir letsencrypt
 
 
 # docker swarm
@@ -76,10 +77,26 @@ touch docker-swarm.yml
 # docker init 
 
 # realizar o deploy
-docker stack deploy --compose-file docker-swarm.yml stackminicurso
+docker pull ovvesley/minicurso-deploy:latest && docker stack deploy --compose-file docker-swarm.yml stackminicurso
 
 
 # visualizar a stack
 docker stack ps stackminicurso --no-trunc
+
+# docker service logs stackminicurso_app -f
+
+# configurar o dns da aplicacao no hostgator 
+https://financeiro.hostgator.com.br/
+
+
+# explicar letsencrypt e exlcuir a stack
+
+docker stack rm stackminicurso
+
+# realizar o deploy
+docker pull ovvesley/minicurso-deploy:latest && docker stack deploy --compose-file docker-swarm.yml stackminicurso
+
+
+
 
 
