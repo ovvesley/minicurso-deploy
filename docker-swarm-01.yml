@@ -40,10 +40,9 @@ services:
       - "traefik.http.routers.web.rule=PathPrefix(`/`)"
       - "traefik.http.routers.web.entrypoints=web"
       - "traefik.http.services.app.loadbalancer.server.port=8000"
-      - "traefik.http.routers.web.rule=Host(`minicurso-teste01.proj.ovvesley.com`)"
+      - "traefik.http.routers.web.rule=Host(`minicurso-teste02.proj.ovvesley.com`)"
       - "traefik.http.routers.web.entrypoints=websecure"
       - "traefik.http.routers.web.tls.certresolver=leresolver"
-
 networks:
   default:
     driver: overlay
