@@ -1,4 +1,5 @@
 from connector.database import connect_postgressql
+from dotenv import load_dotenv
 import os
 load_dotenv() 
 
