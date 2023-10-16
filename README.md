@@ -68,13 +68,13 @@ docker run hello-world
 
 # configurar docker swarm
 
-touch docker-swarm.yml
+touch docker-swarm.yml .env.prod
 mkdir letsencrypt
 
 
 # docker swarm
 
-# docker init 
+docker init 
 
 # realizar o deploy
 docker pull ovvesley/minicurso-deploy:latest && docker stack deploy --compose-file docker-swarm.yml stackminicurso
