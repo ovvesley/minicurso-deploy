@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   app:
-    image: ovvesley/minicurso-deploy:latest
+    image: ovvesley/minicurso-deploy:dev
     build: 
       context: .
       dockerfile: dev.Dockerfile
@@ -14,7 +14,7 @@ services:
       - postgres
 
   postgres:
-    image: postgres:9.6
+    image: postgres:15
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

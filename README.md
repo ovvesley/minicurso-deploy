@@ -56,41 +56,30 @@ sudo systemctl restart postgresql.service
 
 # install docker
 
-sudo apt-get update -y 
-sudo apt-get install ca-certificates curl gnupg -y 
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
+curl -sSL https://get.docker.com/ | sh
 
-# Add the repository to Apt sources:
-echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update -y 
+# resolver usuario root
 
-
-
-# install last version docker
-
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-
-# inciiar o servico do docker
-sudo service docker start
-sudo docker run hello-world
-
----
-
-
-# ativar docker sem root
 sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
 docker run hello-world
 
 
-# habilitar o servico
+# configurar docker swarm
 
-sudo systemctl enable docker.service
-sudo systemctl enable containerd.service
+touch docker-swarm.yml
+
+
+# docker swarm
+
+# docker init 
+
+# realizar o deploy
+docker stack deploy --compose-file docker-swarm.yml stackminicurso
+
+
+# visualizar a stack
+docker stack ps stackminicurso --no-trunc
+
+
